@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
 from http import HTTPStatus
+import json
 
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
+import jsonpatch
 
 from apischema.encoder import encode_to_json_response, encode_error_to_json_response
 from apischema.validator import validate_todo_entry
@@ -12,7 +14,7 @@ from entities import TodoEntry
 from persistence.mapper.memory import MemoryTodoEntryMapper
 from persistence.repository import TodoEntryRepository
 
-from usecases import get_todo_entry, create_todo_entry, UseCaseError, NotFoundError
+from usecases import get_todo_entry, create_todo_entry, update_existing_todo_entry, UseCaseError, NotFoundError
 
 _MAPPER_IN_MEMORY_STORAGE = {
     1: TodoEntry(id=1, summary="Lorem Ipsum", created_at=datetime.now(tz=timezone.utc))
@@ -64,7 +66,7 @@ async def create_new_todo_entry(request: Request) -> Response:
         "201":
             description: TodoEntry was created.
             examples:
-                {"summary": "Lorem Ipsum", "detail": null, "created_at": "2022-09-05T18:07:19.280040+00:00"}
+                {"summary": "Lorem Ipsum", "detail": null, "created_at": "2022-09-05T18:07:19.280040+00:00", "}
         "422":
             description: Validation error.
         "500":
@@ -98,10 +100,63 @@ async def create_new_todo_entry(request: Request) -> Response:
     )
 
 
+async def update_todo_entry(request: Request) -> Response:
+    """
+    summary: Tags TodoEntry
+    responses:
+        "201":
+            description: TodoEntry was updated with tags.
+            examples:
+                {"summary": "Lorem Ipsum", "detail": null, "created_at": "2022-09-05T18:07:19.280040+00:00", "tags": ["important"]}
+        "422":
+            description: Validation error.
+        "500":
+            description: Something went wrong, try again later.
+    """
+    try:
+        identifier = request.path_params["id"]  # TODO: add validation
+
+        mapper = MemoryTodoEntryMapper(storage=_MAPPER_IN_MEMORY_STORAGE)
+        repository = TodoEntryRepository(mapper=mapper)
+
+        entity = await get_todo_entry(identifier=identifier, repository=repository)
+        entity = json.loads(encode_to_json_response(entity=entity))
+
+    except NotFoundError:
+        return Response(
+            content=None,
+            status_code=HTTPStatus.NOT_FOUND,
+            media_type="application/json",
+        )
+
+    patch = await request.json()
+    data = jsonpatch.apply_patch(entity, patch)
+    errors = validate_todo_entry(raw_data=data)
+    if errors:
+        return Response(
+            content=encode_error_to_json_response(error=errors),
+            status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
+            media_type="application/json",
+        )
+
+    try:
+        updated_entity = TodoEntry(**data)
+        updated_entity = await update_existing_todo_entry(identifier=identifier, updated_entity=updated_entity, repository=repository)
+        content = encode_to_json_response(entity=updated_entity)
+    except UseCaseError:
+        return Response(
+            content=None,
+            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+            media_type="application/json",
+        )
+
+    return Response(content=content, media_type="application/json")
+
 app = Starlette(
     debug=True,
     routes=[
         Route("/todo/", create_new_todo_entry, methods=["POST"]),
         Route("/todo/{id:int}/", get_todo, methods=["GET"]),
+        Route("/todo/{id:int}/", update_todo_entry, methods=["PATCH"]),
     ],
 )

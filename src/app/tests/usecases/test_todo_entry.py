@@ -5,7 +5,7 @@ import pytest
 from entities import TodoEntry
 from persistence.mapper.memory import MemoryTodoEntryMapper
 from persistence.repository import TodoEntryRepository
-from usecases import get_todo_entry, NotFoundError, create_todo_entry, UseCaseError
+from usecases import get_todo_entry, update_existing_todo_entry, create_todo_entry, UseCaseError, NotFoundError
 
 _storage = {
     1: TodoEntry(id=1, summary="Lorem Ipsum", created_at=datetime.now(tz=timezone.utc))
@@ -50,3 +50,16 @@ async def test_todo_entry_creation_error() -> None:
     data = TodoEntry(summary="Lorem ipsum", created_at=datetime.now(tz=timezone.utc))
     with pytest.raises(UseCaseError):
         await create_todo_entry(entity=data, repository=repository)
+
+@pytest.mark.asyncio
+async def test_update_existing_todo_entry() -> None:
+    mapper = MemoryTodoEntryMapper(storage=_storage)
+    repository = TodoEntryRepository(mapper=mapper)
+
+    data = TodoEntry(summary="Lorem ipsum", created_at=datetime.now(tz=timezone.utc))
+    entity = await create_todo_entry(entity=data, repository=repository)
+
+    id = entity.id
+    updated_entity = await update_existing_todo_entry(identifier=id, updated_entity=entity, repository=repository)
+
+    assert entity == updated_entity

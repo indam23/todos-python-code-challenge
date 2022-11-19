@@ -11,3 +11,7 @@ class TodoEntryMapperInterface(metaclass=ABCMeta):
     @abstractmethod
     async def create(self, entity: TodoEntry) -> TodoEntry:
         """Creates new TodoEntry in persistence layer"""
+
+    @abstractmethod
+    async def update(self, identifier: int, updated_entity: TodoEntry) -> TodoEntry:
+        """Updates existing TodoEntry in persistence layer"""

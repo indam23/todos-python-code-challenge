@@ -25,6 +25,13 @@ class MemoryTodoEntryMapper(TodoEntryMapperInterface):
         except TypeError as error:
             raise CreateMapperError(error)
 
+    async def update(self, identifier: int, updated_entity: TodoEntry) -> TodoEntry:
+        try:
+            self._storage[identifier] = updated_entity
+            return updated_entity
+        except TypeError as error:
+            raise CreateMapperError(error)
+
     def _generate_unique_id(self) -> int:
         identifier = randint(1, 10_000)
         while identifier in self._storage:
