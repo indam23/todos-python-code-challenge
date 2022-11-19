@@ -66,7 +66,7 @@ async def create_new_todo_entry(request: Request) -> Response:
         "201":
             description: TodoEntry was created.
             examples:
-                {"summary": "Lorem Ipsum", "detail": null, "created_at": "2022-09-05T18:07:19.280040+00:00", "}
+                {"summary": "Lorem Ipsum", "detail": null, "created_at": "2022-09-05T18:07:19.280040+00:00"}
         "422":
             description: Validation error.
         "500":
@@ -103,6 +103,14 @@ async def create_new_todo_entry(request: Request) -> Response:
 async def update_todo_entry(request: Request) -> Response:
     """
     summary: Tags TodoEntry
+    parameters:
+        - name: id
+          in: path
+          description: TodoEntry id
+          required: true
+          schema:
+            type: integer
+            format: int64
     responses:
         "201":
             description: TodoEntry was updated with tags.
@@ -115,7 +123,6 @@ async def update_todo_entry(request: Request) -> Response:
     """
     try:
         identifier = request.path_params["id"]  # TODO: add validation
-
         mapper = MemoryTodoEntryMapper(storage=_MAPPER_IN_MEMORY_STORAGE)
         repository = TodoEntryRepository(mapper=mapper)
 
