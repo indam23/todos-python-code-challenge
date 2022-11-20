@@ -1,7 +1,7 @@
 from random import randint
 
 from entities import TodoEntry
-from persistence.mapper.errors import EntityNotFoundMapperError, CreateMapperError
+from persistence.mapper.errors import EntityNotFoundMapperError, CreateMapperError, UpdateMapperError
 from persistence.mapper.interfaces import TodoEntryMapperInterface
 
 
@@ -27,10 +27,14 @@ class MemoryTodoEntryMapper(TodoEntryMapperInterface):
 
     async def update(self, identifier: int, updated_entity: TodoEntry) -> TodoEntry:
         try:
+            self._storage[identifier]
+        except KeyError:
+            raise EntityNotFoundMapperError(f"Entity `id:{identifier}` was not found.")
+        try:
             self._storage[identifier] = updated_entity
             return updated_entity
         except TypeError as error:
-            raise CreateMapperError(error)
+            raise UpdateMapperError(error)
 
     def _generate_unique_id(self) -> int:
         identifier = randint(1, 10_000)
