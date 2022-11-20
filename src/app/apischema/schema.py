@@ -4,7 +4,8 @@ schema = {
     "properties": {
         "id": {"type": "integer", "minimum": 1},
         "summary": {"type": "string", "minLength": 3, "maxLength": 26},
-        "detail": {"type": "string", "maxLength": 255},
+        "detail": {"type": ["string", "null"], "maxLength": 255},
         "created_at": {"type": "string", "format": "date-time"},
+        "tags": {"type": "array"},
     },
 }
