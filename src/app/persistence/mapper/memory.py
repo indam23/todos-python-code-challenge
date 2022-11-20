@@ -1,7 +1,11 @@
 from random import randint
 
 from entities import TodoEntry
-from persistence.mapper.errors import EntityNotFoundMapperError, CreateMapperError, UpdateMapperError
+from persistence.mapper.errors import (
+    EntityNotFoundMapperError,
+    CreateMapperError,
+    UpdateMapperError,
+)
 from persistence.mapper.interfaces import TodoEntryMapperInterface
 
 

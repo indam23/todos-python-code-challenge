@@ -14,7 +14,13 @@ from entities import TodoEntry
 from persistence.mapper.memory import MemoryTodoEntryMapper
 from persistence.repository import TodoEntryRepository
 
-from usecases import get_todo_entry, create_todo_entry, update_existing_todo_entry, UseCaseError, NotFoundError
+from usecases import (
+    get_todo_entry,
+    create_todo_entry,
+    update_existing_todo_entry,
+    UseCaseError,
+    NotFoundError,
+)
 
 _MAPPER_IN_MEMORY_STORAGE = {
     1: TodoEntry(id=1, summary="Lorem Ipsum", created_at=datetime.now(tz=timezone.utc))
@@ -148,7 +154,9 @@ async def update_todo_entry(request: Request) -> Response:
 
     try:
         updated_entity = TodoEntry(**data)
-        updated_entity = await update_existing_todo_entry(identifier=identifier, updated_entity=updated_entity, repository=repository)
+        updated_entity = await update_existing_todo_entry(
+            identifier=identifier, updated_entity=updated_entity, repository=repository
+        )
         content = encode_to_json_response(entity=updated_entity)
     except UseCaseError:
         return Response(
@@ -158,6 +166,7 @@ async def update_todo_entry(request: Request) -> Response:
         )
 
     return Response(content=content, media_type="application/json")
+
 
 app = Starlette(
     debug=True,

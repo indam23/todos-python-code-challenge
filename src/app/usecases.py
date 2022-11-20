@@ -26,11 +26,14 @@ async def create_todo_entry(
     except CreateError as error:
         raise UseCaseError(error)
 
+
 async def update_existing_todo_entry(
     identifier: int, updated_entity: TodoEntry, repository: TodoEntryRepository
 ) -> TodoEntry:
     try:
-        return await repository.update(identifier=identifier, updated_entity=updated_entity)
+        return await repository.update(
+            identifier=identifier, updated_entity=updated_entity
+        )
     except EntityNotFoundError as err:
         raise NotFoundError(err)
     except UpdateError as error:

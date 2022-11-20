@@ -11,9 +11,11 @@ _storage = {
     1: TodoEntry(id=1, summary="Lorem Ipsum", created_at=datetime.now(tz=timezone.utc))
 }
 
+
 @pytest.fixture
 def mapper():
     return MemoryTodoEntryMapper(storage=_storage)
+
 
 @pytest.fixture
 def repository(mapper):
