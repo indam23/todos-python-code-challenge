@@ -20,52 +20,6 @@ Accept: application/json
 %}
 ###
 
-## PATCH Update existing todo
-PATCH http://{{host}}:{{port}}/todo/1
-Content-Type: application/json-patch+json
-
-[
-    {"op": "add", "path": "/tags/-", "value": "important"}
-]
-
-> {%
-    client.test("Update todo", function() {
-        client.assert(response.status === 201, "Response status is not 201");
-        client.assert(response.body.hasOwnProperty("id"), "Cannot find 'id' option in response");
-    });
-%}
-###
-
-## PATCH Update existing todo
-PATCH http://{{host}}:{{port}}/todo/1
-Content-Type: application/json-patch+json
-
-[
-    {"op": "remove", "path": "/tags"}
-]
-
-> {%
-    client.test("Update todo", function() {
-        client.assert(response.status === 201, "Response status is not 201");
-        client.assert(response.body.hasOwnProperty("id"), "Cannot find 'id' option in response");
-    });
-%}
-###
-
-## PATCH Update existing todo
-PATCH http://{{host}}:{{port}}/todo/42
-Content-Type: application/json-patch+json
-
-[
-    {"op": "add", "path": "/tags/-", "value": "important"}
-]
-
-> {%
-    client.test("Todo was not found", function() {
-        client.assert(response.status === 404, "Response status is not 404");
-    });
-%}
-###
 
 
 ## POST Create new todo
@@ -105,6 +59,53 @@ Content-Type: application/json
         client.assert(response.body.hasOwnProperty("message"), "Cannot find 'message' option in response");
         client.assert(response.body.hasOwnProperty("validation_schema"), "Cannot find 'validation_schema' option in response");
         client.assert(response.body.hasOwnProperty("path"), "Cannot find 'path' option in response");
+    });
+%}
+###
+
+## PATCH Update existing todo
+PATCH http://{{host}}:{{port}}/todo/1/
+Content-Type: application/json-patch+json
+
+[
+    {"op": "add", "path": "/tags/-", "value": "important"}
+]
+
+> {%
+    client.test("Update todo", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.hasOwnProperty("id"), "Cannot find 'id' option in response");
+    });
+%}
+###
+
+## PATCH Update existing todo
+PATCH http://{{host}}:{{port}}/todo/1/
+Content-Type: application/json-patch+json
+
+[
+    {"op": "remove", "path": "/tags"}
+]
+
+> {%
+    client.test("Update todo", function() {
+        client.assert(response.status === 200, "Response status is not 200");
+        client.assert(response.body.hasOwnProperty("id"), "Cannot find 'id' option in response");
+    });
+%}
+###
+
+## PATCH Update existing todo
+PATCH http://{{host}}:{{port}}/todo/42/
+Content-Type: application/json-patch+json
+
+[
+    {"op": "add", "path": "/tags/-", "value": "important"}
+]
+
+> {%
+    client.test("Todo was not found", function() {
+        client.assert(response.status === 404, "Response status is not 404");
     });
 %}
 ###

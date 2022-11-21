@@ -11,5 +11,6 @@ class AbstractEntity(BaseModel):
 class TodoEntry(AbstractEntity):
     summary: str
     detail: Optional[str]
-    created_at: datetime
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
     tags: List[str] = list()

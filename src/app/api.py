@@ -1,4 +1,4 @@
-from datetime import datetime, timezone
+import os
 from http import HTTPStatus
 import json
 
@@ -11,8 +11,8 @@ import jsonpatch
 from apischema.encoder import encode_to_json_response, encode_error_to_json_response
 from apischema.validator import validate_todo_entry
 from entities import TodoEntry
-from persistence.mapper.memory import MemoryTodoEntryMapper
 from persistence.repository import TodoEntryRepository
+from persistence.mapper import init_mapper
 
 from usecases import (
     get_todo_entry,
@@ -22,10 +22,8 @@ from usecases import (
     NotFoundError,
 )
 
-_MAPPER_IN_MEMORY_STORAGE = {
-    1: TodoEntry(id=1, summary="Lorem Ipsum", created_at=datetime.now(tz=timezone.utc))
-}
-
+mapper = init_mapper()
+repository = TodoEntryRepository(mapper)
 
 async def get_todo(request: Request) -> Response:
     """
@@ -42,15 +40,19 @@ async def get_todo(request: Request) -> Response:
         "200":
             description: Object was found.
             examples:
-                {"id": 1, "summary": "Lorem Ipsum", "detail": null, "created_at": "2022-09-27T17:29:06.183775+00:00"}
+                {
+                    "id": 1,
+                    "summary": "Lorem Ipsum",
+                    "detail": null,
+                    "created_at": "2022-09-27T17:29:06.183775+00:00",
+                    "updated_at": null,
+                    "tags": []
+                }
         "404":
             description: Object was not found
     """
     try:
         identifier = request.path_params["id"]  # TODO: add validation
-
-        mapper = MemoryTodoEntryMapper(storage=_MAPPER_IN_MEMORY_STORAGE)
-        repository = TodoEntryRepository(mapper=mapper)
 
         entity = await get_todo_entry(identifier=identifier, repository=repository)
         content = encode_to_json_response(entity=entity)
@@ -72,7 +74,14 @@ async def create_new_todo_entry(request: Request) -> Response:
         "201":
             description: TodoEntry was created.
             examples:
-                {"summary": "Lorem Ipsum", "detail": null, "created_at": "2022-09-05T18:07:19.280040+00:00"}
+                {
+                    "id": 1,
+                    "summary": "Lorem Ipsum",
+                    "detail": null,
+                    "created_at": "2022-09-27T17:29:06.183775+00:00",
+                    "updated_at": null,
+                    "tags": []
+                }
         "422":
             description: Validation error.
         "500":
@@ -86,9 +95,6 @@ async def create_new_todo_entry(request: Request) -> Response:
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
             media_type="application/json",
         )
-
-    mapper = MemoryTodoEntryMapper(storage=_MAPPER_IN_MEMORY_STORAGE)
-    repository = TodoEntryRepository(mapper=mapper)
 
     try:
         entity = TodoEntry(**data)
@@ -118,19 +124,23 @@ async def update_todo_entry(request: Request) -> Response:
             type: integer
             format: int64
     responses:
-        "201":
+        "204":
             description: TodoEntry was updated with tags.
             examples:
-                {"summary": "Lorem Ipsum", "detail": null, "created_at": "2022-09-05T18:07:19.280040+00:00", "tags": ["important"]}
+                {
+                    "summary": "Lorem Ipsum",
+                    "detail": null,
+                    "created_at": "2022-09-05T18:07:19.280040+00:00",
+                    "updated_at": "2022-09-05T18:08:32.280040+00:00",
+                    "tags": ["important"]
+                }
         "422":
             description: Validation error.
         "500":
             description: Something went wrong, try again later.
     """
     try:
-        identifier = request.path_params["id"]  # TODO: add validation
-        mapper = MemoryTodoEntryMapper(storage=_MAPPER_IN_MEMORY_STORAGE)
-        repository = TodoEntryRepository(mapper=mapper)
+        identifier = request.path_params["id"]
 
         entity = await get_todo_entry(identifier=identifier, repository=repository)
         entity = json.loads(encode_to_json_response(entity=entity))
@@ -165,7 +175,9 @@ async def update_todo_entry(request: Request) -> Response:
             media_type="application/json",
         )
 
-    return Response(content=content, media_type="application/json")
+    return Response(
+        content=content, media_type="application/json"
+    )
 
 
 app = Starlette(
