@@ -23,7 +23,6 @@ class SqlTodoEntryMapper(TodoEntryMapperInterface):
             todo = self.get_todo(identifier=identifier, session=session)
             return todo.as_entry()
 
-
     def get_todo(self, identifier: int, session: Session) -> TodoEntry:
         try:
             todo = session.query(Todo).filter(Todo.id == identifier).first()
@@ -31,9 +30,7 @@ class SqlTodoEntryMapper(TodoEntryMapperInterface):
                 raise EntityNotFoundMapperError
             return todo
         except EntityNotFoundMapperError:
-            raise EntityNotFoundMapperError(
-                f"Entity `id:{identifier}` was not found."
-            )
+            raise EntityNotFoundMapperError(f"Entity `id:{identifier}` was not found.")
 
     async def create(self, entity: TodoEntry) -> TodoEntry:
         with self.db.session() as session:

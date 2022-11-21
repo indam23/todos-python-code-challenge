@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 
 from persistence.db.base import Base
 
+
 class DbAccessLayer:
     def __init__(self, engine):
         self.engine = engine
@@ -12,6 +13,7 @@ class DbAccessLayer:
 
     def session(self):
         return sessionmaker(bind=self.engine, expire_on_commit=False)()
+
 
 def get_postgres_db_engine_from_env():
     host = os.environ.get("POSTGRES_HOST", "localhost")

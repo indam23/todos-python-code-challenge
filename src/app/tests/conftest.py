@@ -14,6 +14,12 @@ EXISTING_TODO_DATA = {
     "summary": "Lorem Ipsum",
     "created_at": datetime.now(tz=timezone.utc),
 }
+NEW_TODO_ID = 2
+NEW_TODO_DATA = {
+    "id": NEW_TODO_ID,
+    "summary": "Something New",
+    "created_at": datetime.now(tz=timezone.utc),
+}
 
 _memory_storage = {EXISTING_TODO_ID: TodoEntry(**EXISTING_TODO_DATA)}
 

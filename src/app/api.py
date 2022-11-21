@@ -25,6 +25,7 @@ from usecases import (
 mapper = init_mapper()
 repository = TodoEntryRepository(mapper)
 
+
 async def get_todo(request: Request) -> Response:
     """
     summary: Finds TodoEntry by id
@@ -175,9 +176,7 @@ async def update_todo_entry(request: Request) -> Response:
             media_type="application/json",
         )
 
-    return Response(
-        content=content, media_type="application/json"
-    )
+    return Response(content=content, media_type="application/json")
 
 
 app = Starlette(

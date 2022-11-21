@@ -23,8 +23,7 @@ async def test_todo_entry_not_found_error(memory_repository) -> None:
 @pytest.mark.asyncio
 async def test_save_todo_entry(memory_repository) -> None:
     data = TodoEntry(
-        summary="Buy flowers to my wife",
-        detail="We have marriage anniversary"
+        summary="Buy flowers to my wife", detail="We have marriage anniversary"
     )
 
     entity = await memory_repository.create(entity=data)
