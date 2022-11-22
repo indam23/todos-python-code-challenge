@@ -14,6 +14,21 @@ Since, all data are stored in the app memory, that means it will disappear after
 1) Extend the API in a way that it will be possible to add labels/tags to `TodoEntry`.
 2) Save data in database (_you can choose any database based on your preferences_).
 
+
+### Approach
+1) Extend the API in a way that it will be possible to add labels/tags to `TodoEntry`.
+   1) Implemented a generic update endpoint that accepts [Jsonpatch](https://www.rfc-editor.org/rfc/rfc6902) to make updates to any field of the Todo resource
+   2) Added a `tags` field to the Todo resource; tags can be added & removed using the generic update endpoint. See test.http for example body.
+2) Save data in database (_you can choose any database based on your preferences_).
+   1) Connects to a Postgres DB
+   2) Uses Sqlalchemy ORM
+   3) Expects unsecured postgres database running at `localhost:5432/todo_challenge`; can be changed via env vars, see function `get_postgres_db_engine_from_env`.
+3) Changes made to support the above:
+   1) `created_at` is handled at storage level and is no longer expected from client
+   2) Added `updated_at` field
+   3) Turned some repeated set up steps into pytest fixtures
+
+
 ## Scoring
 Minimum passing score is **25 points**
 
