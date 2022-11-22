@@ -8,7 +8,6 @@ from tests.conftest import (
     NEW_TODO_DATA,
 )
 
-
 def test_get_todo(sql_mapper, session, existing_todo):
     todo = sql_mapper.get_todo(identifier=EXISTING_TODO_ID, session=session)
     assert isinstance(todo, Todo)
@@ -17,7 +16,8 @@ def test_get_todo(sql_mapper, session, existing_todo):
 
 
 def test_create_todo(sql_mapper, session, existing_todo):
-    todo_entry = TodoEntry(**NEW_TODO_DATA)
+    data = {k:v for k,v in NEW_TODO_DATA.items() if k != "id"}
+    todo_entry = TodoEntry(**data)
     todo = sql_mapper.create_todo(entity=todo_entry, session=session)
     assert isinstance(todo, Todo)
     assert todo.id == NEW_TODO_ID
