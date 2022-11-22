@@ -6,22 +6,20 @@ from sqlalchemy.orm import sessionmaker
 from entities import TodoEntry
 from persistence.db.base import Base
 from persistence.db.db_access import DbAccessLayer
-from persistence.mapper.persistent import SqlTodoEntryMapper
+from persistence.mapper.sql import SqlTodoEntryMapper
 
-from tests.conftest import EXISTING_TODO_DATA
+from tests.conftest import EXISTING_TODO_DATA, NEW_TODO_DATA
 
 
 @pytest.fixture
 def engine():
     return create_engine("sqlite+pysqlite:///:memory:", echo=True, future=True)
 
-
 @pytest.fixture
 def tables(engine):
     Base.metadata.create_all(engine)
     yield
     Base.metadata.drop_all(engine)
-
 
 @pytest.fixture
 def session(engine, tables):
@@ -35,17 +33,23 @@ def session(engine, tables):
     transaction.rollback()
     connection.close()
 
-
-class MockDbAccessLayer(DbAccessLayer):
-    def session(self):
-        return session()
-
-
 @pytest.fixture
-def sql_mapper():
-    return SqlTodoEntryMapper(MockDbAccessLayer)
+def sql_mapper(engine):
+    return SqlTodoEntryMapper(DbAccessLayer(engine))
 
 
 @pytest.fixture()
 def existing_todo(sql_mapper, session):
     sql_mapper.create_todo(TodoEntry(**EXISTING_TODO_DATA), session)
+
+
+@pytest.fixture()
+def new_todo_entry():
+    data = {k:v for k,v in NEW_TODO_DATA.items() if k != "id"}
+    todo_entry = TodoEntry(**data)
+    return todo_entry
+
+@pytest.fixture()
+def existing_todo_entry():
+    todo_entry = TodoEntry(**EXISTING_TODO_DATA)
+    return todo_entry
