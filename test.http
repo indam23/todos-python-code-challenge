@@ -1,3 +1,21 @@
+## POST Create new todo
+POST http://{{host}}:{{port}}/todo/
+Content-Type: application/json
+
+{
+  "summary": "Lorem Ipsum",
+  "detail": null
+}
+
+> {%
+    client.test("Create new todo", function() {
+        client.assert(response.status === 201, "Response status is not 201");
+        client.assert(response.body.hasOwnProperty("id"), "Cannot find 'id' option in response");
+    });
+%}
+###
+
+
 ## GET todo entry
 GET http://{{host}}:{{port}}/todo/1/
 Accept: application/json
@@ -20,24 +38,6 @@ Accept: application/json
 %}
 ###
 
-
-
-## POST Create new todo
-POST http://{{host}}:{{port}}/todo/
-Content-Type: application/json
-
-{
-  "summary": "Lorem Ipsum",
-  "detail": null
-}
-
-> {%
-    client.test("Create new todo", function() {
-        client.assert(response.status === 201, "Response status is not 201");
-        client.assert(response.body.hasOwnProperty("id"), "Cannot find 'id' option in response");
-    });
-%}
-###
 
 
 ## POST Validation test

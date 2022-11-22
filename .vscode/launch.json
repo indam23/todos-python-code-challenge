@@ -21,7 +21,8 @@
    "args": ["api:app"],
    "jinja": true,
    "justMyCode": false,
-   "cwd": "${workspaceFolder}/src/app"
+   "cwd": "${workspaceFolder}/src/app",
+   "env": {"POSTGRES_DATABASE": "todos"}
   }
  ]
 }

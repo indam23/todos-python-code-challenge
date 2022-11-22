@@ -17,7 +17,7 @@ class DbAccessLayer:
 
 def get_postgres_db_engine_from_env():
     host = os.environ.get("POSTGRES_HOST", "localhost")
-    port = os.environ.get("POSTGRES_HOST", "5432")
-    database = os.environ.get("POSTGRES_HOST", "todo_challenge")
+    port = os.environ.get("POSTGRES_PORT", "5432")
+    database = os.environ.get("POSTGRES_DATABASE", "todo_challenge")
     engine = create_engine(f"postgresql://{host}:{port}/{database}")
     return engine
