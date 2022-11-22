@@ -5,7 +5,6 @@ def test_short_summary_in_todo_entry() -> None:
     data = {
         "summary": "Lo",
         "detail": "",
-        "created_at": "2022-09-05T18:07:19.280040+00:00",
         "tags": [],
     }
 
@@ -20,7 +19,6 @@ def test_tags_are_not_array() -> None:
     data = {
         "summary": "Lorem Ipsum",
         "detail": "",
-        "created_at": "2022-09-05T18:07:19.280040+00:00",
         "tags": "important",
     }
 

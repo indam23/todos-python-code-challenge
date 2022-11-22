@@ -6,3 +6,5 @@ pyyaml
 pytest
 Pytest-asyncio
 jsonpatch
+sqlalchemy
+psycopg2
