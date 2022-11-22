@@ -11,7 +11,7 @@
    "module": "pytest",
    "justMyCode": true,
    "cwd": "${workspaceFolder}/src/app",
-   "args": ["tests/persistence/mapper/test_sql.py", "-vv"]
+   "args": ["tests/apischema/test_validator.py", "-vv"]
   },
   {
    "name": "Python: FastAPI",

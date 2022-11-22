@@ -23,11 +23,6 @@ class Todo(Base):
     summary = Column(String, nullable=False)
     detail = Column(String)
     created_at = Column(DateTime(timezone=True), server_default=functions.now())
-    updated_at = Column(
-        DateTime(timezone=True),
-        server_default=functions.now(),
-        onupdate=functions.now(),
-    )
     tags = relationship(
         "Tag", secondary=todo_tag_association_table, backref="todos", lazy="joined"
     )
@@ -48,7 +43,6 @@ class Todo(Base):
             "summary": self.summary,
             "detail": self.detail,
             "created_at": self.created_at,
-            "updated_at": self.updated_at,
             "tags": [tag.tag for tag in self.tags],
         }
 

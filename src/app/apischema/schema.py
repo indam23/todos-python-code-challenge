@@ -1,6 +1,6 @@
 schema = {
     "type": "object",
-    "required": ["summary", "created_at"],
+    "required": ["summary"],
     "properties": {
         "id": {"type": "integer", "minimum": 1},
         "summary": {"type": "string", "minLength": 3, "maxLength": 26},

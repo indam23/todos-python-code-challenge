@@ -23,10 +23,10 @@ Since, all data are stored in the app memory, that means it will disappear after
    1) Connects to a Postgres DB
    2) Uses Sqlalchemy ORM
    3) Expects unsecured postgres database running at `localhost:5432/todo_challenge`; can be changed via env vars, see function `get_postgres_db_engine_from_env`.
+   4) unit tests use an in-memory sqlite database instead of postgres.
 3) Changes made to support the above:
-   1) `created_at` is handled at storage level and is no longer expected from client
-   2) Added `updated_at` field
-   3) Turned some repeated set up steps into pytest fixtures
+   1) `created_at` is handled at storage level and is no longer expected from client. Therefore it is also no longer required in the jsonschema.
+   2) Turned some repeated set up steps into pytest fixtures
 
 
 ## Scoring

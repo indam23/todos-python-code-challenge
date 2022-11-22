@@ -37,7 +37,6 @@ class MemoryTodoEntryMapper(TodoEntryMapperInterface):
         except KeyError:
             raise EntityNotFoundMapperError(f"Entity `id:{identifier}` was not found.")
         try:
-            updated_entity.updated_at = datetime.now(tz=timezone.utc)
             self._storage[identifier] = updated_entity
             return updated_entity
         except TypeError as error:

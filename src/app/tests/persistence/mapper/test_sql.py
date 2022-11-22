@@ -15,6 +15,8 @@ def test_get_todo(sql_mapper, session, existing_todo):
     assert isinstance(todo, Todo)
     assert todo.id == EXISTING_TODO_ID
     assert todo.summary == EXISTING_TODO_DATA["summary"]
+    assert todo.created_at is not None
+
 
 @pytest.mark.asyncio
 async def test_get(sql_mapper, existing_todo):
@@ -22,12 +24,16 @@ async def test_get(sql_mapper, existing_todo):
     assert isinstance(todo_entry, TodoEntry)
     assert todo_entry.id == EXISTING_TODO_ID
     assert todo_entry.summary == EXISTING_TODO_DATA["summary"]
+    assert todo_entry.created_at is not None
+
 
 def test_create_todo(sql_mapper, session, existing_todo, new_todo_entry):
     todo = sql_mapper.create_todo(entity=new_todo_entry, session=session)
     assert isinstance(todo, Todo)
     assert todo.id == NEW_TODO_ID
     assert todo.summary == NEW_TODO_DATA["summary"]
+    assert todo.created_at is not None
+
 
 @pytest.mark.asyncio
 async def test_create(sql_mapper, existing_todo, new_todo_entry): 
@@ -35,6 +41,8 @@ async def test_create(sql_mapper, existing_todo, new_todo_entry):
     assert isinstance(todo_entry, TodoEntry)
     assert todo_entry.id == NEW_TODO_ID
     assert todo_entry.summary == NEW_TODO_DATA["summary"]
+    assert todo_entry.created_at is not None
+
 
 def test_update_todo(sql_mapper, session, existing_todo, existing_todo_entry):
     tag_text = "important"

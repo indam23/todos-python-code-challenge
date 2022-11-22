@@ -46,7 +46,6 @@ async def get_todo(request: Request) -> Response:
                     "summary": "Lorem Ipsum",
                     "detail": null,
                     "created_at": "2022-09-27T17:29:06.183775+00:00",
-                    "updated_at": null,
                     "tags": []
                 }
         "404":
@@ -80,7 +79,6 @@ async def create_new_todo_entry(request: Request) -> Response:
                     "summary": "Lorem Ipsum",
                     "detail": null,
                     "created_at": "2022-09-27T17:29:06.183775+00:00",
-                    "updated_at": null,
                     "tags": []
                 }
         "422":
@@ -132,7 +130,6 @@ async def update_todo_entry(request: Request) -> Response:
                     "summary": "Lorem Ipsum",
                     "detail": null,
                     "created_at": "2022-09-05T18:07:19.280040+00:00",
-                    "updated_at": "2022-09-05T18:08:32.280040+00:00",
                     "tags": ["important"]
                 }
         "422":
